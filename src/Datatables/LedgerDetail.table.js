@@ -16,7 +16,7 @@ const headCells = [
   { id: "value", label: "Value", numeric: true },
 ];
 
-const colWidths = [120, 110, 180, 100, 140, 90, 180, 60, 110, 90, 100];
+const colWidths = [110, 100, 160, 90, 130, 80, 150, 60, 110, 80, 90];
 
 const formatNum = (n) => n.toLocaleString("en-IN");
 
@@ -69,35 +69,7 @@ export default function LedgerDetailTable() {
   );
 
   return (
-    <>
-      {/* Info bar for ledger */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: { xs: 1, sm: 2 }, py: 1.5, borderTop: "1px solid #e8e8e8", mt: 1 }}>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>
-          Showing <Box component="span" sx={{ fontWeight: 700 }}>{scanData.length}</Box> ledger lines · earned <Box component="span" sx={{ fontWeight: 700 }}>2,58,900</Box> pts, redeemed <Box component="span" sx={{ fontWeight: 700 }}>85,000</Box> pts
-        </Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>·</Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>
-          Report ID <Box component="span" sx={{ fontWeight: 700, color: "#1a237e" }}>PF-LEDGER/CR45</Box>
-        </Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>·</Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>
-          Prepared by <Box component="span" sx={{ fontWeight: 700 }}>System (PowerOne)</Box>
-        </Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>·</Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>
-          Review <Box component="span" sx={{ fontWeight: 700 }}>Finance</Box>
-        </Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>·</Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>
-          Approval <Box component="span" sx={{ fontWeight: 700, bgcolor: "#fff3e0", color: "#e65100", px: 0.8, py: 0.1, borderRadius: "4px", fontSize: "0.78rem" }}>Pending</Box>
-        </Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>·</Box>
-        <Box component="span" sx={{ fontSize: "0.8rem", color: "#555" }}>
-          Point value <Box component="span" sx={{ fontWeight: 700 }}>₹1.00 / point</Box>
-        </Box>
-      </Box>
-
-      <Paper variant="outlined" sx={{ borderRadius: 1, overflow: "hidden", height: 520, display: "flex", flexDirection: "column" }}>
+    <Paper variant="outlined" sx={{ borderRadius: 1, overflow: "hidden", height: 520, display: "flex", flexDirection: "column" }}>
         {/* FIXED HEADER */}
         <Box ref={headerRef} onScroll={syncScroll("header")} sx={{ overflow: "hidden", flexShrink: 0 }}>
           <Table size="small" sx={{ tableLayout: "fixed", minWidth: "unset" }}>
@@ -107,7 +79,7 @@ export default function LedgerDetailTable() {
                 {headCells.map((cell) => (
                   <TableCell
                     key={cell.id}
-                    align={cell.numeric ? "right" : "left"}
+                    align={cell.id === "qty" ? "center" : cell.numeric ? "right" : "left"}
                     sx={{ bgcolor: "#1a237e", color: "#fff", fontWeight: 600, fontSize: "0.78rem", whiteSpace: "nowrap", borderBottom: "2px solid #0d1547", py: 1.2, px: 1.5 }}
                   >
                     <TableSortLabel
@@ -139,7 +111,7 @@ export default function LedgerDetailTable() {
                   <TableCell sx={{ fontSize: "0.8rem", py: 1, px: 1.5 }}>{row.state}</TableCell>
                   <TableCell sx={{ fontSize: "0.8rem", py: 1, px: 1.5, fontFamily: "monospace" }}>{row.sku}</TableCell>
                   <TableCell sx={{ fontSize: "0.8rem", py: 1, px: 1.5, whiteSpace: "nowrap" }}>{row.product}</TableCell>
-                  <TableCell align="right" sx={{ fontSize: "0.8rem", py: 1, px: 1.5 }}>{row.qty}</TableCell>
+                  <TableCell align="center" sx={{ fontSize: "0.8rem", py: 1, px: 1.5 }}>{row.qty}</TableCell>
                   <TableCell sx={{ fontSize: "0.8rem", py: 1, px: 1.5, textAlign: "center" }}>
                     <Chip label={row.entryType} size="small" sx={{ bgcolor: "#e8f5e9", color: "#2e7d32", fontSize: "0.7rem", fontWeight: 500, height: 24 }} />
                   </TableCell>
@@ -157,7 +129,7 @@ export default function LedgerDetailTable() {
                 <TableCell colSpan={7} sx={{ fontSize: "0.82rem", fontWeight: 700, py: 1.5, px: 1.5, borderTop: "2px solid #1a237e", borderBottom: "none", bgcolor: "#f0f4ff" }}>
                   TOTAL — {scanData.length} scans
                 </TableCell>
-                <TableCell align="right" sx={{ fontSize: "0.82rem", fontWeight: 700, py: 1.5, px: 1.5, borderTop: "2px solid #1a237e", borderBottom: "none", bgcolor: "#f0f4ff" }}>{totals.qty}</TableCell>
+                <TableCell align="center" sx={{ fontSize: "0.82rem", fontWeight: 700, py: 1.5, px: 1.5, borderTop: "2px solid #1a237e", borderBottom: "none", bgcolor: "#f0f4ff" }}>{totals.qty}</TableCell>
                 <TableCell sx={{ borderTop: "2px solid #1a237e", borderBottom: "none", bgcolor: "#f0f4ff" }} />
                 <TableCell align="right" sx={{ fontSize: "0.82rem", fontWeight: 700, py: 1.5, px: 1.5, borderTop: "2px solid #1a237e", borderBottom: "none", bgcolor: "#f0f4ff", color: "#2e7d32" }}>+{formatNum(totals.points)}</TableCell>
                 <TableCell align="right" sx={{ fontSize: "0.82rem", fontWeight: 700, py: 1.5, px: 1.5, borderTop: "2px solid #1a237e", borderBottom: "none", bgcolor: "#f0f4ff", color: "#2e7d32" }}>+₹{formatNum(totals.value)}</TableCell>
@@ -166,6 +138,5 @@ export default function LedgerDetailTable() {
           </Table>
         </Box>
       </Paper>
-    </>
   );
 }

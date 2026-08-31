@@ -22,7 +22,7 @@ const headCells = [
   { id: "mode", label: "Mode", numeric: false },
 ];
 
-const colWidths = [50, 110, 200, 100, 120, 150, 190, 70, 110, 110, 120, 110, 150, 120, 140, 110];
+const colWidths = [50, 110, 200, 100, 120, 150, 150, 60, 100, 100, 110, 100, 140, 110, 130, 100];
 
 const formatNum = (n) => n.toLocaleString("en-IN");
 

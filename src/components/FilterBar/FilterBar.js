@@ -134,10 +134,17 @@ export default function FilterBar({ activeTab = "consolidated", onTabChange }) {
             <MenuItem value="Blocked">Blocked</MenuItem>
           </Select>
         </FormControl>
-        <FormControl size="small" sx={{ ...selectSx, opacity: 0.5 }}>
+        <FormControl size="small" sx={{ ...selectSx, opacity: activeTab === "ledger" ? 0.5 : 1 }} disabled={activeTab === "ledger"}>
           <InputLabel>Product</InputLabel>
           <Select value={product} label="Product" onChange={(e) => setProduct(e.target.value)}>
             <MenuItem value="All">All</MenuItem>
+            <MenuItem value="Inverter Battery IT 150Ah">Inverter Battery IT 150Ah</MenuItem>
+            <MenuItem value="Tall Tubular TT 200Ah">Tall Tubular TT 200Ah</MenuItem>
+            <MenuItem value="SMF Battery 100Ah">SMF Battery 100Ah</MenuItem>
+            <MenuItem value="Inverter 1050VA">Inverter 1050VA</MenuItem>
+            <MenuItem value="Solar Panel 335W">Solar Panel 335W</MenuItem>
+            <MenuItem value="Solar Inverter 3kW">Solar Inverter 3kW</MenuItem>
+            <MenuItem value="Automotive Battery 35Ah">Automotive Battery 35Ah</MenuItem>
           </Select>
         </FormControl>
       </Box>

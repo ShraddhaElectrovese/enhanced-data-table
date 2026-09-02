@@ -63,6 +63,8 @@ const dealerData = [
 
 const getClosingPts = (d) => d.openingPts + d.earnedPts - d.redeemedPts;
 
+const PAGE_SIZE = 15;
+
 const dealerSlice = createSlice({
   name: "dealer",
   initialState: {
@@ -70,19 +72,24 @@ const dealerSlice = createSlice({
     searchTerm: "",
     sortBy: "id",
     sortOrder: "asc",
+    visibleCount: PAGE_SIZE,
   },
   reducers: {
     setSearchTerm: (state, action) => {
       state.searchTerm = action.payload;
+      state.visibleCount = PAGE_SIZE;
     },
     setSort: (state, action) => {
       state.sortBy = action.payload.sortBy;
       state.sortOrder = action.payload.sortOrder;
     },
+    loadMore: (state) => {
+      state.visibleCount = Math.min(state.visibleCount + PAGE_SIZE, state.allDealers.length);
+    },
   },
 });
 
-export const { setSearchTerm, setSort } = dealerSlice.actions;
+export const { setSearchTerm, setSort, loadMore } = dealerSlice.actions;
 
 export const selectFilteredDealers = (state) => {
   const { allDealers, searchTerm } = state.dealer;
@@ -102,6 +109,15 @@ export const selectSortedDealers = (state) => {
     if (sortOrder === "asc") return aVal > bVal ? 1 : -1;
     return aVal < bVal ? 1 : -1;
   });
+};
+
+export const selectVisibleDealers = (state) => {
+  return selectSortedDealers(state).slice(0, state.dealer.visibleCount);
+};
+
+export const selectHasMore = (state) => {
+  const filtered = selectFilteredDealers(state);
+  return state.dealer.visibleCount < filtered.length;
 };
 
 export const selectTotals = (state) => {

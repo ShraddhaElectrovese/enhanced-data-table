@@ -1,7 +1,10 @@
-import React, { useRef, useCallback } from "react";
-import { useSelector } from "react-redux";
-import { selectSortedDealers, selectFilteredDealers, selectTotals } from "../reducers/dealerReducer";
-import { Paper, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Box } from "@mui/material";
+import React, { useRef, useCallback, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { selectVisibleDealers, selectSortedDealers, selectFilteredDealers, selectTotals, selectHasMore, loadMore } from "../reducers/dealerReducer";
+import { Paper, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Box, Skeleton, Typography } from "@mui/material";
+
+const SKELETON_ROWS = 5;
+const LOAD_DELAY = 400; // ms — simulates network latency for the skeleton to be visible
 
 const headCells = [
   { id: "id", label: "#", numeric: true },
@@ -24,18 +27,27 @@ const headCells = [
 
 const colWidths = [50, 110, 200, 100, 120, 150, 150, 60, 100, 100, 110, 100, 140, 110, 130, 100];
 
+// Approximate visible widths for the skeleton bars (percentage of colWidth)
+const skeletonWidths = [40, 70, 85, 70, 80, 85, 90, 45, 65, 65, 75, 65, 80, 65, 75, 60];
+
 const formatNum = (n) => n.toLocaleString("en-IN");
 
 const getClosingPts = (d) => d.openingPts + d.earnedPts - d.redeemedPts;
 
 export default function DatatableTable({ searchTerm }) {
-  const sortedDealers = useSelector(selectSortedDealers);
+  const dispatch = useDispatch();
+  const visibleDealers = useSelector(selectVisibleDealers);
   const filteredDealers = useSelector(selectFilteredDealers);
   const totals = useSelector(selectTotals);
+  const hasMore = useSelector(selectHasMore);
+
+  const [loading, setLoading] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   const bodyRef = useRef(null);
   const headerRef = useRef(null);
   const syncing = useRef(false);
+  const sentinelRef = useRef(null);
 
   const syncScroll = useCallback((source) => (e) => {
     if (syncing.current) return;
@@ -49,6 +61,28 @@ export default function DatatableTable({ searchTerm }) {
     requestAnimationFrame(() => { syncing.current = false; });
   }, []);
 
+  // Infinite scroll: observe the sentinel element at the bottom of the scrollable body
+  useEffect(() => {
+    const el = sentinelRef.current;
+    // Skip if: sentinel not mounted, all loaded, currently loading, or user hasn't scrolled yet
+    if (!el || !hasMore || loading || !hasScrolled) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !loading) {
+          setLoading(true);
+          setTimeout(() => {
+            dispatch(loadMore());
+            setLoading(false);
+          }, LOAD_DELAY);
+        }
+      },
+      { root: bodyRef.current, threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [dispatch, hasMore, loading, hasScrolled, visibleDealers.length]);
+
   const ColGroup = () => (
     <colgroup>
       {colWidths.map((w, i) => <col key={i} style={{ width: w }} />)}
@@ -57,6 +91,7 @@ export default function DatatableTable({ searchTerm }) {
 
   const totalClosing = totals.closingPts;
   const totalRedeemedAmt = totals.redeemedPts;
+
 
   return (
     <Paper variant="outlined" sx={{ borderRadius: 1, overflow: "hidden", height: 520, display: "flex", flexDirection: "column" }}>
@@ -84,12 +119,12 @@ export default function DatatableTable({ searchTerm }) {
         </Table>
       </Box>
 
-      {/* SCROLLABLE BODY */}
-      <Box ref={bodyRef} onScroll={syncScroll("body")} sx={{ flex: 1, overflow: "auto" }}>
+      {/* SCROLLABLE BODY with infinite scroll */}
+      <Box ref={bodyRef} onScroll={(e) => { syncScroll("body")(e); if (!hasScrolled && e.currentTarget.scrollTop > 0) setHasScrolled(true); }} sx={{ flex: 1, overflow: "auto" }}>
         <Table size="small" sx={{ tableLayout: "fixed", minWidth: "unset" }}>
           <ColGroup />
           <TableBody>
-            {sortedDealers.map((row) => {
+            {visibleDealers.map((row) => {
               const closing = getClosingPts(row);
               return (
                 <TableRow key={row.id} hover sx={{ "&:nth-of-type(odd)": { bgcolor: "#fafafa" }, "&:hover": { bgcolor: "#f0f4ff" }, cursor: "pointer" }}>
@@ -123,7 +158,40 @@ export default function DatatableTable({ searchTerm }) {
               );
             })}
 
-            {/* TOTAL ROW */}
+            {/* SKELETON LOADING ROWS */}
+            {loading && Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+              <TableRow key={`skeleton-${i}`} sx={{ "&:nth-of-type(odd)": { bgcolor: "#fafafa" } }}>
+                {colWidths.map((w, colIdx) => (
+                  <TableCell key={colIdx} sx={{ py: 1, px: 1.5 }}>
+                    <Skeleton
+                      variant="rounded"
+                      width={`${skeletonWidths[colIdx]}%`}
+                      height={14}
+                      animation="wave"
+                      sx={{ bgcolor: "#e8eaf6", borderRadius: 1 }}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+
+            {/* Sentinel — triggers next batch when scrolled into view */}
+            {hasMore && !loading && (
+              <TableRow>
+                <TableCell colSpan={16} align="center" ref={sentinelRef} sx={{ py: 2, borderBottom: "none" }}>
+                  <Typography variant="caption" sx={{ color: "#999" }}>Scroll for more…</Typography>
+                </TableCell>
+              </TableRow>
+            )}
+
+            {/* Sentinel while loading (invisible, keeps observer alive) */}
+            {hasMore && loading && (
+              <TableRow>
+                <TableCell colSpan={16} ref={sentinelRef} sx={{ p: 0, borderBottom: "none", height: 0 }} />
+              </TableRow>
+            )}
+
+            {/* TOTAL ROW — sticky inside scrollable area, scrolls horizontally with table */}
             <TableRow sx={{ bgcolor: "#f0f4ff", position: "sticky", bottom: 0, zIndex: 2 }}>
               <TableCell colSpan={7} sx={{ fontSize: "0.82rem", fontWeight: 700, py: 1.5, px: 1.5, borderTop: "2px solid #1a237e", borderBottom: "none", bgcolor: "#f0f4ff" }}>
                 TOTAL — {filteredDealers.length} dealers
@@ -140,6 +208,16 @@ export default function DatatableTable({ searchTerm }) {
             </TableRow>
           </TableBody>
         </Table>
+      </Box>
+
+      {/* ROW COUNTER — bottom of table, always visible */}
+      <Box sx={{ px: 2, py: 0.5, bgcolor: "#f5f7ff", borderTop: "1px solid #e0e4ef", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Typography variant="caption" sx={{ color: "#5c6370", fontSize: "0.72rem", fontWeight: 500 }}>
+          {visibleDealers.length} of {filteredDealers.length} rows showing
+        </Typography>
+        <Box sx={{ width: 80, height: 3, bgcolor: "#e0e4ef", borderRadius: 2, overflow: "hidden" }}>
+          <Box sx={{ width: `${(visibleDealers.length / filteredDealers.length) * 100}%`, height: "100%", bgcolor: "#1a237e", borderRadius: 2, transition: "width 0.3s ease" }} />
+        </Box>
       </Box>
     </Paper>
   );

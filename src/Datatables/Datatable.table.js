@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectVisibleDealers, selectSortedDealers, selectFilteredDealers, selectTotals, selectHasMore, loadMore } from "../reducers/dealerReducer";
+import { selectVisibleDealers, selectFilteredDealers, selectTotals, selectHasMore, loadMore } from "../reducers/dealerReducer";
 import { Paper, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Box, Skeleton, Typography } from "@mui/material";
 
 const SKELETON_ROWS = 5;

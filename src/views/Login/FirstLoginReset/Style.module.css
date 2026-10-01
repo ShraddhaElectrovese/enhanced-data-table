@@ -1,0 +1,157 @@
+.loginRoot {
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: "Montserrat", sans-serif;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  width: 600px;
+  background: rgba(4, 21, 68, 0.65);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  border-radius: 37px;
+  padding: 40px 36px;
+  text-align: center;
+}
+
+/* LOGO */
+.logo {
+  width: 200px;
+  margin-bottom: 24px;
+}
+
+/* HEADING */
+.heading {
+  font-size: 26px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.subHeading {
+  font-size: 14px;
+  color: #9fb0d0;
+  margin-bottom: 24px;
+  margin-top: 8px;
+}
+
+.underline {
+  width: 36px;
+  height: 4px;
+  background: linear-gradient(90deg, #3284e2, #243b7f);
+  border-radius: 10px;
+  margin: 0px auto 30px;
+}
+
+/* FORM */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* INPUT BACKGROUND FIX */
+.card input {
+  background-color: #041136 !important;
+  border-radius: 6px;
+}
+
+.card input::placeholder {
+  color: #FFFFFF !important;
+}
+
+.card fieldset {
+  border-color: #FFFFFF !important;
+}
+
+/* Password wrapper */
+.passwordField {
+  position: relative;
+}
+
+.passwordField input {
+  padding-right: 44px !important;
+}
+
+/* Eye icon INSIDE input */
+.eyeIcon {
+  position: absolute !important;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9fb0d0 !important;
+  padding: 4px;
+}
+
+/* Buttons */
+.submitBtn {
+  margin-top: 18px;
+  height: 46px;
+  border-radius: 30px !important;
+  background: linear-gradient(90deg, #3284E2, #34549F) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+}
+
+/* Success View */
+.successContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.successIcon {
+  font-size: 100px !important;
+  color: #2ED47A;
+  margin-bottom: 30px;
+}
+
+.successIconContainer {
+  position: relative;
+  display: inline-flex;
+  border-radius: 50%;
+  padding: 10px;
+  /* background: rgba(46, 212, 122, 0.1); */
+  margin-bottom: 24px;
+}
+
+/* ====== FIX BROWSER AUTOFILL ====== */
+.card input:-webkit-autofill,
+.card input:-webkit-autofill:hover,
+.card input:-webkit-autofill:focus,
+.card input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #041136 inset !important;
+  box-shadow: 0 0 0 1000px #041136 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+  border-radius: 6px;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .card {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  .heading {
+    font-size: 22px;
+  }
+}

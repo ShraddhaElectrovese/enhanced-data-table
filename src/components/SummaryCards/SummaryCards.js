@@ -30,7 +30,7 @@ export default function SummaryCards() {
   };
 
   return (
-    <Box sx={{ display: "flex", gap: 0, mb: 3, overflowX: "auto" }}>
+    <Box sx={{ display: "flex", gap: 2, mb: 1, overflowX: "auto" }}>
       {cards.map((card) => (
         <Card
           key={card.label}

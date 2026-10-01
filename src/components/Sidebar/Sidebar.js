@@ -48,17 +48,11 @@ export default function Sidebar() {
         minWidth: 240,
         bgcolor: "#1a1f2e",
         color: "#fff",
-        height: "100vh",
-        position: "sticky",
-        top: 0,
+        height: "100%",
         overflowY: "auto",
       }}
     >
-      <Box sx={{ p: 2, pb: 1 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700, color: "#f5c518" }}>
-          PowerOne
-        </Typography>
-      </Box>
+
 
       {navSections.map((section, sIdx) => (
         <Box key={section.title}>

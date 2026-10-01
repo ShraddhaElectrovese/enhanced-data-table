@@ -1,0 +1,107 @@
+.forgotRoot {
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: "Montserrat", sans-serif;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  width: 600px;
+
+  background: rgba(4, 21, 68, 0.65);
+  border-radius: 37px;
+   opacity: 100%;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+
+  padding: 40px 36px;
+  text-align: center;
+}
+
+.logo {
+  width: 200px;
+  margin-bottom: 24px;
+}
+
+.heading {
+  font-size: 26px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.subText {
+  color: #cbd6ff;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.underline {
+  width: 36px;
+  height: 4px;
+  background: linear-gradient(90deg, #3284e2, #243b7f);
+  border-radius: 10px;
+  margin: 0 auto 30px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  /* gap: 18px; */
+}
+
+.actionBtn {
+  margin-top: 36px;
+  height: 46px;
+  width: 524px;
+  border-radius: 30px !important;
+  background: linear-gradient(90deg, #3284e2, #243b7f) !important;
+  font-weight: 600 !important;
+}
+
+.inlineAction {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.sendLinkText {
+  font-size: 13px;
+  font-weight: 500;
+  color: #E47237;
+  /* XD orange */
+  cursor: pointer;
+  user-select: none;
+}
+
+.sendLinkText:hover {
+  text-decoration: underline;
+}
+
+
+/* ====== FIX BROWSER AUTOFILL (Chrome / Edge / Brave) ====== */
+.card input:-webkit-autofill,
+.card input:-webkit-autofill:hover,
+.card input:-webkit-autofill:focus,
+.card input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #041136 inset !important;
+  box-shadow: 0 0 0 1000px #041136 inset !important;
+
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+
+  border-radius: 6px;
+  transition: background-color 9999s ease-in-out 0s;
+}

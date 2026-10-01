@@ -1,0 +1,9 @@
+.captchaWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.loginAction {
+  margin: 18px 0 30px 0px;
+}
